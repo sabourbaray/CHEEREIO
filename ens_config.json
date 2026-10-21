@@ -6,7 +6,7 @@
   "NEST": "F",
   "REGION": "",
   "ASSIM_PATH": "/home/rsb001/geoschem/CHEEREIO",
-  "RUN_NAME": "ECCC_CH4_20190102_20190105_smoke",
+  "RUN_NAME": "ECCC_CH4_20190102_20190105_fresh01",
   "MY_PATH": "/home/rsb001/geoschem/cheereio_output_dir",
   "DATA_PATH": "/home/rsb001/geoschem/ExtData",
   "CH4_HEMCO_ROOT": "/home/rsb001/geoschem/ExtData/HEMCO",

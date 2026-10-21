@@ -76,7 +76,7 @@ def context():
     c = si.getSpeciesConfig()
     validate(c)
     root = Path(c['MY_PATH']) / c['RUN_NAME']
-    if core.parent != root / 'CHEEREIO':
+    if core.parent != (root / 'CHEEREIO').resolve():
         raise ValueError('Use the deployed run/CHEEREIO/core/pbs_workflow.py')
     return core, c, root
 
