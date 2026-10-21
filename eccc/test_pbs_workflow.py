@@ -44,6 +44,7 @@ class SchedulerTests(unittest.TestCase):
         (self.core/'pbs_workflow.py').write_text('import sys,json\nfrom pathlib import Path\nt=json.loads(Path(sys.argv[2]).read_text())[int(sys.argv[3])]\nsys.exit(t.get("exit",0))\n')
         env=self.base/'env.sh';env.write_text(':\n')
         self.c=json.loads((ROOT/'ens_config_CH4_ECCC_2023.json').read_text())
+        self.c.update(START_DATE='20230101', ASSIM_START_DATE='20230102', END_DATE='20230104')
         self.c['PBSEnvironment']=str(env)
         self.bin=self.base/'bin';self.bin.mkdir()
         (self.bin/'qsub').write_text(MOCK);(self.bin/'qsub').chmod(0o755)

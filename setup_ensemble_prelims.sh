@@ -2,10 +2,23 @@
 
 # This script sets up the variables that will be referenced by all setup_ensemble scripts. Users never run this directly.
 
-source environments/eccc.env || exit 1
+# Keep the upstream Conda path unless PBS is explicitly selected.
+cheereio_scheduler=$(jq -er '.Scheduler // "SLURM"' ens_config.json) || exit 1
+case "$cheereio_scheduler" in
+    PBS)
+        export CHEEREIO_ENV_NAME=$(jq -er '.CondaEnv' ens_config.json)
+        cheereio_envfile=$(jq -er '.PBSEnvironment' ens_config.json) || exit 1
+        source "$cheereio_envfile" || exit 1
+        ;;
+    SLURM) eval "$(conda shell.bash hook)" ;;
+    *) echo "Unsupported Scheduler: $cheereio_scheduler" >&2; exit 1 ;;
+esac
 
 cd core
 python validate_ensconfig.py || exit $? #Validate before changing directory.
+if [[ $cheereio_scheduler == PBS ]]; then
+    python -c 'import settings_interface as s; from pbs_workflow import validate; validate(s.getSpeciesConfig())' || exit 1
+fi
 cd ..
 
 ret=$?

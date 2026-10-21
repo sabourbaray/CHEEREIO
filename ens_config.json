@@ -249,7 +249,7 @@
   "scalefactor_plot_freq": "daily",
   "Extensions": {
     "TROPOMI_CH4": "True",
-    "CH4": "True"
+    "CH4": "False"
   },
   "Scheduler": "PBS",
   "PBSQueue": "",

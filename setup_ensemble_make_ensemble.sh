@@ -94,16 +94,16 @@ cd ${MY_PATH}/${RUN_NAME}/CHEEREIO
 #Create initial scaling factors
 cd core
 if [ "${DO_ENS_SPINUP}" = true ]; then
-  python initialize_scaling_factors.py "${ENS_SPINUP_START}"
+  bash run_python.sh $(jq -r ".CondaEnv" ../ens_config.json) initialize_scaling_factors.py "${ENS_SPINUP_START}"
 else
-  python initialize_scaling_factors.py "${START_DATE}"
+  bash run_python.sh $(jq -r ".CondaEnv" ../ens_config.json) initialize_scaling_factors.py "${START_DATE}"
 fi
-python prep_par.py "PRODUCTION" #Figure out who should assimilate which cores.
-python setup_obs_dates.py #Create date dictionaries for rapid reference at assimilation time.
+bash run_python.sh $(jq -r ".CondaEnv" ../ens_config.json) prep_par.py "PRODUCTION" #Figure out who should assimilate which cores.
+bash run_python.sh $(jq -r ".CondaEnv" ../ens_config.json) setup_obs_dates.py #Create date dictionaries for rapid reference at assimilation time.
 
 #Preprocess obspack if that's what we do.
 if [[ ${ACTIVATE_OBSPACK} = "true" ]] && [[ ${preprocess_raw_obspack_files} = "true" ]]; then
-  python preprocess_obspack.py
+  bash run_python.sh $(jq -r ".CondaEnv" ../ens_config.json) preprocess_obspack.py
 fi
 
 

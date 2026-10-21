@@ -42,7 +42,7 @@ if [ "${DO_CONTROL_WITHIN_ENSEMBLE_RUNS}" = false ]; then
     cd ${MY_PATH}/${RUN_NAME}/CHEEREIO/core
 
     #update history collections for production-style run (not spinups)
-    python update_history.py "SETCONTROL"
+    conda run -n $(jq -r ".CondaEnv" ../ens_config.json) python update_history.py "SETCONTROL"
 
     bash change_hemcodiag_freq.sh "control" #update hemco diagnostics frequency.
 

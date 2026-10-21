@@ -56,9 +56,9 @@ if "$SetupTemplateRundir"; then
 
   #Update HISTORY.rc
   if [ "${DO_ENS_SPINUP}" = true ]; then
-    python update_history.py "SPINUP"
+    bash run_python.sh $(jq -r ".CondaEnv" ../ens_config.json) update_history.py "SPINUP"
   else
-    python update_history.py "TEMPLATEDIR"
+    bash run_python.sh $(jq -r ".CondaEnv" ../ens_config.json) update_history.py "TEMPLATEDIR"
   fi
 
   printf "${thinline}"
@@ -90,7 +90,11 @@ if "$CompileTemplateRundir"; then
   else
     cmake . -DRUNDIR=..
   fi
-  make -j "${CHEEREIO_BUILD_CPUS:-2}"
+  if [[ ${cheereio_scheduler:-SLURM} == PBS ]]; then
+    make -j "${CHEEREIO_BUILD_CPUS:-2}"
+  else
+    make -j
+  fi
   make install
 
   printf "${thinline}TEMPLATE RUN DIRECTORY COMPILED${thinline}"
