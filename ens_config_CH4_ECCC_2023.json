@@ -6,12 +6,12 @@
   "NEST": "F",
   "REGION": "",
   "ASSIM_PATH": "/home/rsb001/geoschem/CHEEREIO",
-  "RUN_NAME": "ECCC_CH4_20230101_20230104_smoke",
+  "RUN_NAME": "ECCC_CH4_20190102_20190105_smoke",
   "MY_PATH": "/home/rsb001/geoschem/cheereio_output_dir",
   "DATA_PATH": "/home/rsb001/geoschem/ExtData",
   "CH4_HEMCO_ROOT": "/home/rsb001/geoschem/ExtData/HEMCO",
   "USE_CHEEREIO_TEMPLATE_CH4_HEMCO_Config": "False",
-  "RESTART_FILE": "/home/rsb001/geoschem/ExtData/CHEEREIO/GEOSChem.Restart.20230101_0000z.nc4",
+  "RESTART_FILE": "/home/rsb001/geoschem/cheereio_output_dir/gcc_ch4_20190101_1day/Restarts/GEOSChem.Restart.20190102_0000z.nc4",
   "BC_FILES": "",
   "sim_name": "CH4",
   "chemgrid": "trop+strat",
@@ -27,18 +27,18 @@
   "ENS_SPINUP_FROM_BC_RESTART": "false",
   "ENS_SPINUP_START": "",
   "ENS_SPINUP_END": "",
-  "START_DATE": "20230101",
-  "ASSIM_START_DATE": "20230102",
+  "START_DATE": "20190102",
+  "ASSIM_START_DATE": "20190103",
   "SIMPLE_SCALE_FOR_FIRST_ASSIM_PERIOD": "false",
-  "END_DATE": "20230104",
+  "END_DATE": "20190105",
   "AMPLIFY_ENSEMBLE_SPREAD_FOR_FIRST_ASSIM_PERIOD": "false",
   "SPREAD_AMPLIFICATION_FACTOR": "1.0",
   "species_to_amplify_not_in_statevec": [],
   "DO_BURN_IN": "false",
   "SIMPLE_SCALE_AT_END_OF_BURN_IN_PERIOD": "false",
   "BURN_IN_END": "20180601",
-  "POSTPROCESS_START_DATE": "20230101",
-  "POSTPROCESS_END_DATE": "20230104",
+  "POSTPROCESS_START_DATE": "20190102",
+  "POSTPROCESS_END_DATE": "20190105",
   "nEnsemble": "4",
   "verbose": "2",
   "NumCores": "8",
@@ -82,6 +82,7 @@
   ],
   "HistoryRestartToSave": [
     "SpeciesRst_?ALL?",
+    "Met_DELPDRY",
     "Met_PS1DRY",
     "Met_TMPU1",
     "Met_BXHEIGHT",
@@ -101,7 +102,7 @@
     "CH4_TROPOMI": "True"
   },
   "TROPOMI_dirs": {
-    "CH4": "/home/rsb001/site7/data/tropomi/blnd2023"
+    "CH4": "/home/rsb001/site7/data/tropomi/blnd2019"
   },
   "OMI_dirs": {
     "NO2": "/n/holylfs05/LABS/jacob_lab/Users/drewpendergrass/omi/NO2"
