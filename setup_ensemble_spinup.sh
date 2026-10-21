@@ -54,7 +54,8 @@ sed -e "s:namename:${spinup_name}:g" \
     -e "s:{NumCores}:${NumCores}:g" \
     -e "s:{Partition}:${Partition}:g" \
     -e "s:{Memory}:${Memory}:g" \
-    -e "s:{SpinupWallTime}:${SpinupWallTime}:g" ensemble_run.template > ${spinup_name}.run #change
+    -e "s:{ASSIM}:${MY_PATH}/${RUN_NAME}/CHEEREIO:g" \
+    -e "s|{SpinupWallTime}|${SpinupWallTime}|g" ensemble_run.template > ${spinup_name}.run #change
 chmod 755 ${spinup_name}.run
 rm -f ensemble_run.template
 

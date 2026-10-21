@@ -3,14 +3,7 @@
 #Usage: bash snapshot.sh [--gossipgirl]
 #Optional gossip girl flag changes print output.
 
-source ../environments/cheereio.env #This is specific to the Harvard cluster; rewrite for yours
-eval "$(conda shell.bash hook)"
+source ../core/load_environment.sh || exit 1
 
-conda activate $(jq -r ".CondaEnv" ../ens_config.json) 
-python snapshot_pt1.py $1
-conda deactivate 
-conda activate $(jq -r ".AnimationEnv" ../ens_config.json) 
-python snapshot_pt2.py $1
-conda deactivate 
-
-
+bash ../core/run_python.sh $(jq -r ".CondaEnv" ../ens_config.json) snapshot_pt1.py $1
+bash ../core/run_python.sh $(jq -r ".AnimationEnv" ../ens_config.json) snapshot_pt2.py $1

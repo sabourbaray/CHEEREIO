@@ -1,4 +1,3 @@
-import os
 import numpy as np
 from glob import glob
 import settings_interface as si 
@@ -12,8 +11,7 @@ class GT_Container(object):
 		path_to_ensemble = f"{spc_config['MY_PATH']}/{spc_config['RUN_NAME']}/ensemble_runs"
 		self.path_to_scratch = f"{spc_config['MY_PATH']}/{spc_config['RUN_NAME']}/scratch"
 		if getAssimColumns:
-			column_root = os.environ.get('CHEEREIO_COLUMN_ROOT', self.path_to_scratch)
-			npy_column_files = glob(f'{column_root}/**/*.npy',recursive=True)
+			npy_column_files = glob(f'{self.path_to_scratch}/**/*.npy',recursive=True)
 			npy_col_names = [file.split('/')[-1] for file in npy_column_files]
 			npy_columns = [np.load(file) for file in npy_column_files]
 			self.columns = dict(zip(npy_col_names,npy_columns))

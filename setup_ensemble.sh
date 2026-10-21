@@ -15,11 +15,11 @@
 
 # Turn on/off different steps. This will allow you to come back to this
 # script and set up different stages later.
-SetupTemplateRundir=${SetupTemplateRundir:-false}
-CompileTemplateRundir=${CompileTemplateRundir:-true}
-SetupSpinupRun=${SetupSpinupRun:-false}
-SetupControlRun=${SetupControlRun:-false}
-SetupEnsembleRuns=${SetupEnsembleRuns:-true}
+SetupTemplateRundir=false
+CompileTemplateRundir=true
+SetupSpinupRun=false
+SetupControlRun=false
+SetupEnsembleRuns=true
 
 printf " \n"
 printf "   ___    _  _     ___     ___     ___     ___     ___     ___   \n"
@@ -91,7 +91,7 @@ if "$CompileTemplateRundir"; then
     cmake . -DRUNDIR=..
   fi
   if [[ ${cheereio_scheduler:-SLURM} == PBS ]]; then
-    make -j "${CHEEREIO_BUILD_CPUS:-2}"
+    make -j "${NumCores}"
   else
     make -j
   fi

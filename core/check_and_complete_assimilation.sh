@@ -15,10 +15,10 @@ end_timestamp="${end_timestamp// /_}" #Replace space with underscore
 #If we are not doing simple scaling, we need to do the actual work to combine columns.
 if [ "${1}" = false ]; then
 
-	conda run -n $(jq -r ".CondaEnv" ../ens_config.json) python check_for_all_columns.py
+	bash run_python.sh $(jq -r ".CondaEnv" ../ens_config.json) check_for_all_columns.py
 
 	if [ -f ${MY_PATH}/${RUN_NAME}/scratch/ALL_COLUMNS_FOUND ]; then
-		conda run -n $(jq -r ".CondaEnv" ../ens_config.json) python -u combine_columns_and_update.py ${end_timestamp} >> ${MY_PATH}/${RUN_NAME}/ensemble_runs/logs/letkf_master.out
+		bash run_python.sh $(jq -r ".CondaEnv" ../ens_config.json) -u combine_columns_and_update.py ${end_timestamp} >> ${MY_PATH}/${RUN_NAME}/ensemble_runs/logs/letkf_master.out
 		py_exit_status=$?
 		if [ $py_exit_status != 0 ]; then
 			printf "Python combine columns script exited without code 0 \n" > ${MY_PATH}/${RUN_NAME}/scratch/KILL_ENS #This file's presence will break loop

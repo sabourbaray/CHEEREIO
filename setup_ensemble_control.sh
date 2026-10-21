@@ -42,7 +42,7 @@ if [ "${DO_CONTROL_WITHIN_ENSEMBLE_RUNS}" = false ]; then
     cd ${MY_PATH}/${RUN_NAME}/CHEEREIO/core
 
     #update history collections for production-style run (not spinups)
-    conda run -n $(jq -r ".CondaEnv" ../ens_config.json) python update_history.py "SETCONTROL"
+    bash run_python.sh $(jq -r ".CondaEnv" ../ens_config.json) update_history.py "SETCONTROL"
 
     bash change_hemcodiag_freq.sh "control" #update hemco diagnostics frequency.
 
@@ -71,7 +71,7 @@ sed -i -e "s:{DATE1}:${SPINUP_START}:g" \
         -e "s:{Partition}:${Partition}:g" \
         -e "s:{Memory}:${EnsCtrlSpinupMemory}:g" \
         -e "s:{ASSIM}:${MY_PATH}/${RUN_NAME}/CHEEREIO:g" \
-        -e "s:{SpinupWallTime}:${ControlWallTime}:g" ensemble_run.template > ${control_name}.run #change
+        -e "s|{SpinupWallTime}|${ControlWallTime}|g" ensemble_run.template > ${control_name}.run #change
     chmod 755 ${control_name}.run
     rm -f ensemble_run.template
 

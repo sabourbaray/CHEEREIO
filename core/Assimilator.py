@@ -1,5 +1,3 @@
-import os
-from pathlib import Path
 import numpy as np
 import pandas as pd
 import xarray as xr
@@ -33,9 +31,6 @@ class Assimilator(object):
 			print(f"This core will be handling lat and lon values {[(latval,lonval) for latval,lonval in zip(self.latinds,self.loninds)]}")
 		path_to_ensemble = f"{spc_config['MY_PATH']}/{spc_config['RUN_NAME']}/ensemble_runs"
 		self.path_to_scratch = f"{spc_config['MY_PATH']}/{spc_config['RUN_NAME']}/scratch"
-		self.column_root = os.environ.get('CHEEREIO_COLUMN_ROOT', self.path_to_scratch)
-		if 'CHEEREIO_COLUMN_ROOT' in os.environ:
-			Path(f'{self.column_root}/{ensnum:03d}/{corenum:03d}').mkdir(parents=True, exist_ok=True)
 		self.path_to_logs = f"{spc_config['MY_PATH']}/{spc_config['RUN_NAME']}/ensemble_runs/logs"
 		self.parfilename = f'ens_{ensnum}_core_{corenum}_time_{timestamp}'
 		subdirs = glob(f"{path_to_ensemble}/*/")
@@ -422,7 +417,7 @@ class Assimilator(object):
 					print(f'After RTPS adjustment, analysis values (with nonzero spread) have the following st. dev.: {np.std(analysisSubset[inds_with_spread,:],axis=1)}')
 		return analysisSubset
 	def saveColumn(self,latval,lonval,analysisSubset):
-		np.save(f'{self.column_root}/{str(self.ensnum).zfill(3)}/{str(self.corenum).zfill(3)}/{self.parfilename}_lat_{latval}_lon_{lonval}.npy',analysisSubset)
+		np.save(f'{self.path_to_scratch}/{str(self.ensnum).zfill(3)}/{str(self.corenum).zfill(3)}/{self.parfilename}_lat_{latval}_lon_{lonval}.npy',analysisSubset)
 	#Simple scaling of restart concentrations to match observed values
 	def scaleRestarts(self):
 		if self.verbose>=1:

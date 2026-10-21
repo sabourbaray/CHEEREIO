@@ -254,28 +254,6 @@
   "Scheduler": "PBS",
   "PBSQueue": "",
   "PBSAccount": "",
-  "PBSMaxConcurrent": 4,
-  "PBSEnvironment": "environments/eccc.env",
-  "PBSResources": {
-    "forecast": {
-      "cpus": 8,
-      "memory": "16gb",
-      "walltime": "06:00:00"
-    },
-    "analysis": {
-      "cpus": 4,
-      "memory": "32gb",
-      "walltime": "06:00:00"
-    },
-    "update": {
-      "cpus": 4,
-      "memory": "32gb",
-      "walltime": "06:00:00"
-    },
-    "plot": {
-      "cpus": 4,
-      "memory": "32gb",
-      "walltime": "06:00:00"
-    }
-  }
+  "EnvironmentFile": "environments/eccc.env",
+  "AssimilationCyclesPerJob": "0"
 }

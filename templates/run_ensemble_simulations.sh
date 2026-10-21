@@ -11,8 +11,8 @@
 
 
 #Source clean environment with compatible netcdf and compiler environments and packages like GNU parallel:
-source {ASSIM}/environments/cheereio.env #This is specific to the Harvard cluster; rewrite for yours
-eval "$(conda shell.bash hook)"
+source {ASSIM}/core/load_environment.sh || exit 1
+source {ASSIM}/core/scheduler.sh || exit 1
 
 ### Run directory
 ENSDIR=$(pwd -P)
@@ -21,7 +21,7 @@ MY_PATH="$(jq -r ".MY_PATH" {ASSIM}/ens_config.json)"
 RUN_NAME="$(jq -r ".RUN_NAME" {ASSIM}/ens_config.json)"
 
 ### Get current task ID
-x=${SLURM_ARRAY_TASK_ID}
+x=${PBS_ARRAY_INDEX:-${SLURM_ARRAY_TASK_ID}}
 
 ### Add zeros to the current task ID
 if [ $x -lt 10 ]; then
@@ -33,6 +33,9 @@ elif [ $x -lt 1000 ]; then
 else
   xstr="${x}"
 fi
+
+cycles=0
+maxcycles=$(jq -r '.AssimilationCyclesPerJob // 0' {ASSIM}/ens_config.json)
 
 firstrun=true
 scalefirst="$(jq -r ".SIMPLE_SCALE_FOR_FIRST_ASSIM_PERIOD" {ASSIM}/ens_config.json)"
@@ -46,14 +49,14 @@ cd  {RunName}_${xstr}
 
 # Set the proper # of threads for OpenMP
 # SLURM_CPUS_PER_TASK ensures this matches the number you set with NumCores in the ens_config file
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-{NumCores}}
 
 #Run GC; hang until assimilation complete (later also will do assimilation).
 #This will loop until a file appears in scratch signalling assimilation is complete.
 while [ ! -f ${MY_PATH}/${RUN_NAME}/scratch/ENSEMBLE_COMPLETE ]; do
 # Run GEOS_Chem.  The "time" command will return CPU and wall times.
 # Stdout and stderr will be directed to the "GC.log" log file
-  srun -c $OMP_NUM_THREADS time -p ./gcclassic >> GC.log
+  run_geoschem >> GC.log
   wait
   taillog="$(tail -n 1 GC.log)"
   #Check if GC finished.
@@ -180,6 +183,12 @@ while [ ! -f ${MY_PATH}/${RUN_NAME}/scratch/ENSEMBLE_COMPLETE ]; do
 
   #If there is a problem, the KILL_ENS file will be produced. Break then
   if [ -f ${MY_PATH}/${RUN_NAME}/scratch/KILL_ENS ]; then
+    break
+  fi
+
+  #Optionally release the allocation after complete assimilation cycles.
+  cycles=$((cycles+1))
+  if [ "$maxcycles" -gt 0 ] && [ "$cycles" -ge "$maxcycles" ]; then
     break
   fi
 

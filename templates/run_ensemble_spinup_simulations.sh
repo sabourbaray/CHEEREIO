@@ -9,19 +9,19 @@
 #SBATCH -o logs/ensemble_spinup_%j.out    # File to which STDOUT will be written, %j inserts jobid       
 #SBATCH -e logs/ensemble_spinup_%j.err    # File to which STDERR will be written, %j inserts jobid
 
-source {ASSIM}/environments/cheereio.env #This is specific to the Harvard cluster; rewrite for yours
-eval "$(conda shell.bash hook)"
+source {ASSIM}/core/load_environment.sh || exit 1
+source {ASSIM}/core/scheduler.sh || exit 1
 
 # Set the proper # of threads for OpenMP
 # SLURM_CPUS_PER_TASK ensures this matches the number you set with -c above
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-{NumCores}}
 
 MY_PATH="$(jq -r ".MY_PATH" {ASSIM}/ens_config.json)"
 RUN_NAME="$(jq -r ".RUN_NAME" {ASSIM}/ens_config.json)"
 START_DATE="$(jq -r ".START_DATE" {ASSIM}/ens_config.json)"
 
 ### Get current task ID
-x=${SLURM_ARRAY_TASK_ID}
+x=${PBS_ARRAY_INDEX:-${SLURM_ARRAY_TASK_ID}}
 
 ### Add zeros to the current task ID
 if [ $x -lt 10 ]; then
@@ -41,7 +41,7 @@ cd  {RunName}_${xstr}
 # Run GEOS_Chem.  The "time" command will return CPU and wall times.
 # Stdout and stderr will be directed to the "GC.log" log file
 # (you can change the log file name below if you wish)
-srun -c $OMP_NUM_THREADS time -p ./gcclassic >> GC.log
+run_geoschem >> GC.log
 wait
 
 

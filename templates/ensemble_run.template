@@ -6,11 +6,18 @@
 #SBATCH -p {Partition}
 #SBATCH --mem={Memory}
 
-source {ASSIM}/environments/cheereio.env #This is specific to the Harvard cluster; rewrite for yours
+source {ASSIM}/core/load_environment.sh || exit 1
+source {ASSIM}/core/scheduler.sh || exit 1
+
+# PBS jobs may be submitted by running this script with bash.
+if [[ $Scheduler == PBS && -z ${PBS_JOBID:-} ]]; then
+  submit_job -W "$0"
+  exit $?
+fi
 
 # Set the proper # of threads for OpenMP
 # SLURM_CPUS_PER_TASK ensures this matches the number you set with -c above
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-{NumCores}}
 
 #-------------------------------------------------
 # Initialize
@@ -25,7 +32,7 @@ log="$id.log"
 # Start the simulation
 #-------------------------------------------------
 # Run GEOS-Chem and pipe output to log
-srun -c $OMP_NUM_THREADS time -p ./gcclassic >> $log
+run_geoschem >> $log
 
 # Echo end fin
 echo '===> Run ended at' `date` >> $log
