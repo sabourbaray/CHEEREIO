@@ -56,9 +56,9 @@ if "$SetupTemplateRundir"; then
 
   #Update HISTORY.rc
   if [ "${DO_ENS_SPINUP}" = true ]; then
-    conda run -n $(jq -r ".CondaEnv" ../ens_config.json) python update_history.py "SPINUP"
+    python update_history.py "SPINUP"
   else
-    conda run -n $(jq -r ".CondaEnv" ../ens_config.json) python update_history.py "TEMPLATEDIR"
+    python update_history.py "TEMPLATEDIR"
   fi
 
   printf "${thinline}"

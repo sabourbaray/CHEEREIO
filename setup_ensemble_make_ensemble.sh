@@ -48,7 +48,7 @@ ln -s ../../${RUN_TEMPLATE}/gcclassic .
 
 if [ $x -eq 0 ]; then
 #Switch HEMCO_Config to base/nature one.
-python ${MY_PATH}/${RUN_NAME}/CHEEREIO/core/hemco_delink_scalefactors.py $(pwd) 
+python ${MY_PATH}/${RUN_NAME}/CHEEREIO/core/hemco_delink_scalefactors.py $(pwd)
 else 
 #Use HEMCO_Config with updated scaling factors
 sed_ie "s|template_run|ensemble_runs/${name}|"  HEMCO_Config.rc #Replace template_run with this folder in HEMCO_Config
@@ -94,16 +94,16 @@ cd ${MY_PATH}/${RUN_NAME}/CHEEREIO
 #Create initial scaling factors
 cd core
 if [ "${DO_ENS_SPINUP}" = true ]; then
-  conda run -n $(jq -r ".CondaEnv" ../ens_config.json) python initialize_scaling_factors.py "${ENS_SPINUP_START}" 
+  python initialize_scaling_factors.py "${ENS_SPINUP_START}"
 else
-  conda run -n $(jq -r ".CondaEnv" ../ens_config.json) python initialize_scaling_factors.py "${START_DATE}" 
+  python initialize_scaling_factors.py "${START_DATE}"
 fi
-conda run -n $(jq -r ".CondaEnv" ../ens_config.json) python prep_par.py "PRODUCTION" #Figure out who should assimilate which cores. 
-conda run -n $(jq -r ".CondaEnv" ../ens_config.json) python setup_obs_dates.py #Create date dictionaries for rapid reference at assimilation time.
+python prep_par.py "PRODUCTION" #Figure out who should assimilate which cores.
+python setup_obs_dates.py #Create date dictionaries for rapid reference at assimilation time.
 
 #Preprocess obspack if that's what we do.
 if [[ ${ACTIVATE_OBSPACK} = "true" ]] && [[ ${preprocess_raw_obspack_files} = "true" ]]; then
-  conda run -n $(jq -r ".CondaEnv" ../ens_config.json) python preprocess_obspack.py
+  python preprocess_obspack.py
 fi
 
 

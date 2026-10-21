@@ -33,7 +33,7 @@ if [ "${DO_CONTROL_WITHIN_ENSEMBLE_RUNS}" = false ]; then
     ln -s $RESTART_FILE GEOSChem.Restart.${CONTROL_START}_0000z.nc4
 
     #Switch HEMCO_Config to base/nature one.
-    python ${MY_PATH}/${RUN_NAME}/CHEEREIO/core/hemco_delink_scalefactors.py $(pwd) 
+    python ${MY_PATH}/${RUN_NAME}/CHEEREIO/core/hemco_delink_scalefactors.py $(pwd)
     if [ "${ENS_SPINUP_FROM_BC_RESTART}" = true ]; then
         sed -i -e "s|SpeciesRst|SpeciesBC|g" HEMCO_Config.rc #If we are spinning up from BCs, handle this
     fi
@@ -42,7 +42,7 @@ if [ "${DO_CONTROL_WITHIN_ENSEMBLE_RUNS}" = false ]; then
     cd ${MY_PATH}/${RUN_NAME}/CHEEREIO/core
 
     #update history collections for production-style run (not spinups)
-    conda run -n $(jq -r ".CondaEnv" ../ens_config.json) python update_history.py "SETCONTROL"
+    python update_history.py "SETCONTROL"
 
     bash change_hemcodiag_freq.sh "control" #update hemco diagnostics frequency.
 

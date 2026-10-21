@@ -10,4 +10,4 @@ MY_PATH="$(jq -r ".MY_PATH" ../ens_config.json)"
 CONDA_ENV="$(jq -r ".CondaEnv" ../ens_config.json)"
 
 #Save CHEEREIO-compatible modified default HEMCO_Config with scale factors linnked
-conda run -n ${CONDA_ENV} python hemco_config_updater.py
+python hemco_config_updater.py

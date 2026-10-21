@@ -7,7 +7,7 @@ fi
 #This script updates input_geos in each ensemble member 
 #based on the time stored in the scratch folder.
 
-conda run -n $(jq -r ".CondaEnv" ../ens_config.json) python advance_timestep.py "${1}"
+python advance_timestep.py "${1}"
 py_exit_status=$?
 
 
@@ -70,7 +70,7 @@ do
          #We have to do on the second counter because the yaml parser gets pissed about the default strings.
          #Don't activate obspack for spinup but every other time we do.
          if [[ ("${ACTIVATE_OBSPACK}" = "true" && "${1}" != "SPINUP" && $counter -eq 2) ]]; then
-            conda run -n $(jq -r ".CondaEnv" ../ens_config.json) python obspack_switch.py "${MY_PATH}/${RUN_NAME}/ensemble_runs/${name}/${filename}"
+            python obspack_switch.py "${MY_PATH}/${RUN_NAME}/ensemble_runs/${name}/${filename}"
          fi
        done
        #Increment so we do end time

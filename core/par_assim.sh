@@ -1,5 +1,5 @@
 #!/bin/bash
-eval "$(conda shell.bash hook)"
+# Use the environment activated by setup or the PBS worker.
 
 #Figure out timestamp for assimilation
 MY_PATH="$(jq -r ".MY_PATH" ../ens_config.json)"
@@ -10,7 +10,7 @@ end_timestamp="$(tail -n 1 ${MY_PATH}/${RUN_NAME}/scratch/INPUT_GEOS_TEMP)"
 end_timestamp="${end_timestamp%??}" #Clear last two characters
 end_timestamp="${end_timestamp// /_}" #Replace space with underscore
     
-conda run -n ${CONDA_ENV} python -u par_letkf.py ${end_timestamp} ${1} ${2} ${3} ${4} ${5} >> ${MY_PATH}/${RUN_NAME}/ensemble_runs/logs/letkf_${1}_${2}.out
+python -u par_letkf.py ${end_timestamp} ${1} ${2} ${3} ${4} ${5} >> ${MY_PATH}/${RUN_NAME}/ensemble_runs/logs/letkf_${1}_${2}.out
 py_exit_status=$?
 
 #If python does not exit with exit code one, make file that will break loop

@@ -2,7 +2,7 @@
 
 # This script sets up the variables that will be referenced by all setup_ensemble scripts. Users never run this directly.
 
-eval "$(conda shell.bash hook)"
+source environments/eccc.env || exit 1
 
 cd core
 python validate_ensconfig.py || exit $? #Validate before changing directory.
