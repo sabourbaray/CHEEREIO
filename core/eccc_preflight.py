@@ -34,18 +34,22 @@ with xr.open_dataset(restart) as ds:
         if v not in ds:
             raise ValueError('Missing restart field: '+v)
 files = sorted(Path(c['TROPOMI_dirs']['CH4']).rglob('S5P_*.nc'))
+# Match the production operator's orbit selection, including its strict end bound.
+orbits = [(p, dt.datetime.strptime(p.name.split('_')[-6], '%Y%m%dT%H%M%S'),
+           dt.datetime.strptime(p.name.split('_')[-5], '%Y%m%dT%H%M%S')) for p in files]
+from tropomi_tools import read_tropomi_gosat_corrected
 for day in range((dt.datetime.strptime(c['END_DATE'],'%Y%m%d')-dt.datetime.strptime(c['START_DATE'],'%Y%m%d')).days):
     date = dt.datetime.strptime(c['START_DATE'],'%Y%m%d')+dt.timedelta(days=day)
-    candidates = [p for p in files if date.strftime('%Y%m%dT') in p.name]
+    candidates = [p for p, start, end in orbits if start >= date and end < date+dt.timedelta(days=1)]
     if not candidates:
-        raise ValueError('No TROPOMI files for '+str(date.date()))
-    from tropomi_tools import read_tropomi_gosat_corrected
-    # Also check the exact filename parser used by the upstream date index.
+        raise ValueError('No selectable TROPOMI orbits for '+str(date.date()))
+    # An ocean-only first orbit is normal; look for a usable orbit for this day.
     for p in candidates:
-        dt.datetime.strptime(p.name.split('_')[-6], '%Y%m%dT%H%M%S')
-        dt.datetime.strptime(p.name.split('_')[-5], '%Y%m%dT%H%M%S')
-    obs = read_tropomi_gosat_corrected(str(candidates[0]), 'CH4')
-    if len(obs['CH4']) == 0:
-        raise ValueError('First file has no valid land retrievals; inspect '+str(candidates[0]))
+        obs = read_tropomi_gosat_corrected(str(p), 'CH4', filterinfo={
+            'MAIN': [float(c['filter_obs_poleward_of_n_degrees']['CH4_TROPOMI'])]})
+        if np.isfinite(obs['CH4']).any():
+            break
+    else:
+        raise ValueError('No finite land CH4 in selectable orbits for '+str(date.date()))
 print('Imports, input restart grid/time/fields, and sample blended TROPOMI files passed.')
 print('GEOS-Chem dry run and measured PBS timings are still required.')

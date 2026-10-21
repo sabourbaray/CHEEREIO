@@ -39,8 +39,13 @@ def validate(c):
             raise ValueError(key + ': prepare spun-up restart inputs separately; this driver runs assimilation windows')
     if truth(c['DO_CONTROL_RUN']) and not truth(c['DO_CONTROL_WITHIN_ENSEMBLE_RUNS']):
         raise ValueError('PBS control must run within ensemble_runs')
-    if truth(c['APPROXIMATE_VARON_RERUN']):
-        raise ValueError('Approximate rerun is not supported by this PBS driver')
+    # Overlapping forecasts and special updates need dedicated checkpoint logic.
+    # Reject them rather than advertise untested upstream modes as PBS support.
+    for key in ('DO_RUN_IN_PLACE', 'DO_VARON_RERUN', 'APPROXIMATE_VARON_RERUN',
+                'DO_BURN_IN', 'SIMPLE_SCALE_FOR_FIRST_ASSIM_PERIOD',
+                'AMPLIFY_ENSEMBLE_SPREAD_FOR_FIRST_ASSIM_PERIOD'):
+        if truth(c.get(key, False)):
+            raise ValueError(key + ': PBS currently supports ordinary nonoverlapping LETKF windows only')
     if int(c['nEnsemble']) < 2 or int(c['MaxPar']) < 1:
         raise ValueError('Need at least two members and MaxPar >= 1')
     for kind in ('forecast', 'analysis', 'update', 'plot'):
@@ -101,6 +106,7 @@ def submit(core, c, root, kind, tasks):
         'exec > "task-${task}.log" 2>&1',
         'finish() { rc=$?; trap - EXIT; printf "%s\\n" "$rc" > "${task}.status.tmp"; mv "${task}.status.tmp" "${task}.status"; exit "$rc"; }',
         'trap finish EXIT',
+        'export CHEEREIO_ENV_NAME=' + shlex.quote(c['CondaEnv']),
         'source ' + shlex.quote(str(envfile)),
         'export OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1',
         'export OMP_NUM_THREADS=' + str(r['cpus'] if kind == 'forecast' else 1),
@@ -247,6 +253,7 @@ def provenance(core):
     paths += sorted(core.glob('*.py')) + sorted(core.glob('*.sh'))
     paths += sorted((core.parent / 'extensions').glob('*.json'))
     paths += sorted((core.parent / 'postprocess').glob('*.py'))
+    paths += sorted((core.parent / 'environments').glob('*.env'))
     for path in paths:
         digest.update(str(path.relative_to(core.parent)).encode())
         digest.update(path.read_bytes())
