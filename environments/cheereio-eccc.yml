@@ -1,0 +1,19 @@
+name: cheereio-eccc
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - numpy=1.26.4
+  - pandas=2.2.2
+  - scipy=1.13.1
+  - xarray=2024.5.0
+  - netcdf4
+  - h5py
+  - dask
+  - pyyaml
+  - geopy
+  - matplotlib=3.8
+  - basemap=1.4
+  - ffmpeg
+  - jq
+  - pytest

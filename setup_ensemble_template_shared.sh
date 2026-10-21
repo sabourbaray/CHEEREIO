@@ -35,7 +35,7 @@ sed -i -e "s:{RunName}:${RUN_NAME}:g" \
        -e "s:{NumCores}:${NumCores}:g" \
        -e "s:{Partition}:${Partition}:g" \
        -e "s:{Memory}:${Memory}:g" \
-       -e "s:{WallTime}:${WallTime}:g" \
+       -e "s|{WallTime}|${WallTime}|g" \
        -e "s:{MaxPar}:${MaxPar}:g" \
        -e "s:{ASSIM}:${MY_PATH}/${RUN_NAME}/CHEEREIO:g" ensemble_runs/run_ensemble_simulations.sh
 
@@ -53,7 +53,7 @@ if [ "${DO_ENS_SPINUP}" = true ]; then
          -e "s:{NumCores}:${NumCores}:g" \
          -e "s:{Partition}:${Partition}:g" \
          -e "s:{Memory}:${EnsCtrlSpinupMemory}:g" \
-         -e "s:{WallTime}:${EnsSpinupWallTime}:g" \
+         -e "s|{WallTime}|${EnsSpinupWallTime}|g" \
          -e "s:{MaxPar}:${MaxPar}:g" \
          -e "s:{ASSIM}:${MY_PATH}/${RUN_NAME}/CHEEREIO:g" ensemble_runs/run_ensemble_spinup_simulations.sh
 

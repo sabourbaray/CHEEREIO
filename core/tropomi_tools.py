@@ -149,7 +149,7 @@ def read_tropomi(filename, species, filterinfo=None, includeObsError = False):
 		for i in range(len(surface_pressure)):
 			pressures[i,:]=(a+(b*surface_pressure[i]))/100 #Pa -> hPa
 	elif species=='CH4':
-		pressures = np.zeros([len(sl),13],dtype=np.float)
+		pressures = np.zeros([len(sl),13],dtype=float)
 		pressures.fill(np.nan)
 		for i in range(13):
 			pressures[:,i]=surface_pressure-(i*pressure_interval)
@@ -206,7 +206,7 @@ def read_tropomi_acmg(filename, species, filterinfo=None, includeObsError = Fals
 		
 	data.close()
 
-	pressures = np.zeros([len(goodvals),13],dtype=np.float) #nobs,layer
+	pressures = np.zeros([len(goodvals),13],dtype=float) #nobs,layer
 	pressures.fill(np.nan)
 	for i in range(13):
 		pressures[:,i]=surface_pressure-(i*pressure_interval)
@@ -260,7 +260,7 @@ def read_tropomi_gosat_corrected(filename, species, filterinfo=None, includeObsE
 	met['albedo_nir'] = data['surface_albedo_NIR'].values[goodvals]
 	met['blended_albedo'] = (met['albedo_nir']*2.4)-(met['albedo_swir']*1.13)
 
-	pressures = np.zeros([len(goodvals),13],dtype=np.float) #nobs,layer
+	pressures = np.zeros([len(goodvals),13],dtype=float) #nobs,layer
 	pressures.fill(np.nan)
 	for i in range(13):
 		pressures[:,i]=surface_pressure-(i*pressure_interval)

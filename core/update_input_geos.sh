@@ -1,4 +1,8 @@
 #!/bin/bash
+# PBS stage workers must propagate a failed date/config edit immediately.
+if [[ ${CHEEREIO_PBS_STAGE:-false} == true ]]; then
+    set -e
+fi
 
 #This script updates input_geos in each ensemble member 
 #based on the time stored in the scratch folder.

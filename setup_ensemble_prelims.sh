@@ -5,7 +5,7 @@
 eval "$(conda shell.bash hook)"
 
 cd core
-python validate_ensconfig.py #Do some checks to see if ens_config looks good.
+python validate_ensconfig.py || exit $? #Validate before changing directory.
 cd ..
 
 ret=$?
@@ -66,7 +66,10 @@ SaveDOFS=$(jq -r ".SaveDOFS" ens_config.json)
 ACTIVATE_OBSPACK=$(jq -r ".ACTIVATE_OBSPACK" ens_config.json)
 
 # Path to find non-emissions input data; will use if no default found
-if [[ -f ${HOME}/.geoschem/config ]]; then
+if [[ $(jq -r '.Scheduler // "SLURM"' ens_config.json) == PBS ]]; then
+    DATA_PATH="$(jq -r ".DATA_PATH" ens_config.json)"
+    export GC_DATA_ROOT="$DATA_PATH"
+elif [[ -f ${HOME}/.geoschem/config ]]; then
     source ${HOME}/.geoschem/config
     if [[ ! -d ${GC_DATA_ROOT} ]]; then
         printf "\nWarning: Default root data directory does not exist!"

@@ -39,7 +39,6 @@ def animateData(m,data,file_out,lon,lat,anim_fps = 8, variable = 'Variable',time
 			titlestring = variable
 		plt.title(titlestring)
 		temp = data[i,:,:]
-		temp = temp[:-1, :-1] #weird old bug fix found on stackoverflow
 		#mesh = m.pcolormesh(lon, lat, maptimeseries[:,:,i],latlon=True)
 		mesh.set_array(temp.ravel())
 		return mesh
@@ -62,7 +61,7 @@ def animateData(m,data,file_out,lon,lat,anim_fps = 8, variable = 'Variable',time
 			cmax = np.nanmax(data)
 		clim = [cmin, cmax]
 
-	mesh = m.pcolormesh(lon, lat, data[0,:,:],latlon=True,cmap=cmap)
+	mesh = m.pcolormesh(lon, lat, data[0,:,:],latlon=True,cmap=cmap,shading="nearest")
 	plt.clim(clim[0],clim[1])
 	plt.colorbar(label=variable);
 	anim = animation.FuncAnimation(fig, animate,np.shape(data)[0], blit=False)
