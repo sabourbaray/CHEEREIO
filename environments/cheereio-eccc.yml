@@ -1,6 +1,7 @@
 name: cheereio-eccc
 channels:
   - conda-forge
+  - nodefaults
 dependencies:
   - python=3.10
   - numpy=1.26.4
